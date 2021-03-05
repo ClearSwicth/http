@@ -5,7 +5,7 @@
  * Date: 2021/3/4
  */
 
-namespace http\builder;
+namespace clearswitch\http\builder;
 
 
 class XmlBuilder

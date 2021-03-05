@@ -1,18 +1,17 @@
 <?php
-/**
- *
- * User: daikai
- * Date: 2021/3/4
- */
-
 namespace clearswitch\http\transport;
 
+use clearswitch\http\Request;
 
+/**
+ * CURL
+ * @author Verdient。
+ */
 class CUrlTransport implements TransportInterface
 {
     /**
      * @var array 默认参数
-     * @author clearSwicth。
+     * @author Verdient。
      */
     const DEFAULT_OPTIONS = [
         CURLOPT_RETURNTRANSFER => true,
@@ -23,9 +22,10 @@ class CUrlTransport implements TransportInterface
     ];
 
     /**
-     * @param Request $request 发送请求之前的工作
+     * 准备
+     * @param Request $request 请求对象
      * @return array
-     * @author clearSwitch
+     * @author Verdient。
      */
     protected function prepare(Request $request){
         $options = static::DEFAULT_OPTIONS;
@@ -69,10 +69,8 @@ class CUrlTransport implements TransportInterface
     }
 
     /**
-     * @param Request $request
-     * @return array
-     * @throws \Exception
-     * @author clearSwitch
+     * @inheritdoc
+     * @author Verdient。
      */
     public function send(Request $request){
         $options = $this->prepare($request);
@@ -96,10 +94,8 @@ class CUrlTransport implements TransportInterface
     }
 
     /**
-     * @param array $requests
-     * @return array
-     * @throws \Exception
-     * @author clearSwitch
+     * @inheritdoc
+     * @author Verdient。
      */
     public function batchSend(array $requests){
         $resources = [];

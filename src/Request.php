@@ -4,11 +4,8 @@
  * User: daikai
  * Date: 2021/3/4
  */
-
 namespace clearswitch\http;
 use clearswitch\http\transport\TransportInterface;
-use clearswitch\http\transport\CUrlTransport;
-//include_once "transport/CUrlTransport.php";
 class Request
 {
     /**
@@ -16,9 +13,9 @@ class Request
      * @author clearSwitch。
      */
     const BUILT_IN_BUILDERS = [
-        'json' => 'http\builder\JsonBuilder',
-        'urlencoded' => 'http\builder\UrlencodedBuilder',
-        'xml' => 'http\builder\XmlBuilder'
+        'json' => 'clearswitch\http\builder\JsonBuilder',
+        'urlencoded' => 'clearswitch\http\builder\UrlencodedBuilder',
+        'xml' => 'clearswitch\http\builder\XmlBuilder'
     ];
 
     /**
@@ -26,15 +23,15 @@ class Request
      * @author clearSwitch。
      */
     const BUILT_IN_TRANSPORTS = [
-        'cUrl' => 'http\transport\CUrlTransport',
-        'coroutine' => 'http\transport\CoroutineTransport',
-        'stream' => 'http\transport\StreamTransport'
+        'cUrl' => 'clearswitch\http\transport\CUrlTransport',
+        'coroutine' => 'clearswitch\http\transport\CoroutineTransport',
+        'stream' => 'clearswitch\http\transport\StreamTransport'
     ];
 
     public $transports=[
-        'cUrl' => 'http\transport\CUrlTransport',
-        'coroutine' => 'http\transport\CoroutineTransport',
-        'stream' => 'http\transport\StreamTransport'
+        'cUrl' => 'clearswitch\http\transport\CUrlTransport',
+        'coroutine' => 'clearswitch\http\transport\CoroutineTransport',
+        'stream' => 'clearswitch\http\transport\StreamTransport'
     ];
 
     /**
@@ -132,9 +129,12 @@ class Request
 
     /**
      * @return mixed 发送请求
+     * @return TransportInterface
      * @author clearSwitch
      */
     public function send(){
+        $this->getTransport();
+        print_R($this);exit;
         list($statusCode, $headers, $content, $response) = $this->getTransport()->send($this);
         $result = ObjectHelper::create([
             'class' => static::responseClass(),
@@ -155,9 +155,7 @@ class Request
         if(!isset($this->transports[$this->transport])){
             throw new \Exception('Unkrown transport: ' . $this->transport);
         }
-        print_R($this->transports[$this->transport]);
-        print_R( new \ReflectionClass($this->transports[$this->transport]));exit;
-        return  new $this->transports[$this->transport]();
+        return $this->_transport=new $this->transports[$this->transport]();
     }
 
 }
