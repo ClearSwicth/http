@@ -5,13 +5,13 @@ use clearswitch\http\Request;
 
 /**
  * CURL
- * @author Verdient。
+ * @author clearSwitch。
  */
 class CUrlTransport implements TransportInterface
 {
     /**
      * @var array 默认参数
-     * @author Verdient。
+     * @author clearSwitch。
      */
     const DEFAULT_OPTIONS = [
         CURLOPT_RETURNTRANSFER => true,
@@ -25,7 +25,7 @@ class CUrlTransport implements TransportInterface
      * 准备
      * @param Request $request 请求对象
      * @return array
-     * @author Verdient。
+     * @author clearSwitch。
      */
     protected function prepare(Request $request){
         $options = static::DEFAULT_OPTIONS;
@@ -57,12 +57,12 @@ class CUrlTransport implements TransportInterface
             $options[CURLOPT_POST] = true;
             $options[CURLOPT_POSTFIELDS] = $request->getContent();
         }
-        if($request->getProxyHost()){
+       /* if($request->getProxyHost()){
             $options[CURLOPT_PROXY] = $request->getProxyHost();
         }
         if($request->getProxyPort()){
             $options[CURLOPT_PROXYPORT] = $request->getProxyPort();
-        }
+        }*/
         $options[CURLOPT_TIMEOUT] = $request->getTimeout();
         $options[CURLOPT_CONNECTTIMEOUT] = $request->getTimeout();
         return $options;
@@ -70,13 +70,12 @@ class CUrlTransport implements TransportInterface
 
     /**
      * @inheritdoc
-     * @author Verdient。
+     * @author clearSwitch。
      */
     public function send(Request $request){
         $options = $this->prepare($request);
         $curl = curl_init();
         curl_setopt_array($curl, $options);
-        print_R($options);exit;
         $response = curl_exec($curl);
         if($response === false){
             $error = curl_error($curl) ?: curl_strerror(curl_errno($curl));
@@ -95,7 +94,7 @@ class CUrlTransport implements TransportInterface
 
     /**
      * @inheritdoc
-     * @author Verdient。
+     * @author clearSwitch。
      */
     public function batchSend(array $requests){
         $resources = [];

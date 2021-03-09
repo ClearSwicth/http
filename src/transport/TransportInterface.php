@@ -1,6 +1,6 @@
 <?php
 namespace clearswitch\http\transport;
-use http\Request;
+use clearswitch\http\Request;
 /**
  * 传输通道接口
  * @author clearSwitch。
