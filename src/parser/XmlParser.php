@@ -5,7 +5,7 @@ namespace clearswitch\http\parser;
  * Xml解析器
  * @author clearSwitch。
  */
-class XmlParser extends ResponseParser
+class XmlParser implements ResponseParserInterface
 {
 	/**
 	 * @var int 参数

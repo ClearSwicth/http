@@ -1,11 +1,11 @@
 <?php
 namespace clearswitch\http\parse;
-
+use clearswitch\http\parser\ResponseParserInterface;
 /**
  * URL编码解析器
  * @author clearSwitch。
  */
-class UrlencodedParser extends ResponseParser
+class UrlencodedParser implements ResponseParserInterface
 {
 	/**
 	 * @inheritdoc

@@ -4,8 +4,11 @@
  * User: clearswitch
  * Date: 2021/3/8
  */
+
 namespace clearswitch\http;
+
 use clearswitch\http\parser\ResponseParserInterface;
+
 class Response
 {
     /**
@@ -100,13 +103,14 @@ class Response
      * @inheritdoc
      * @author clearswitch。
      */
-    public function __construct($config = [], $status, $headers, $content, $response){
+    public function __construct($config = [], $status, $headers, $content, $response)
+    {
         //parent::__construct($config);
         $this->parsers = array_merge(static::BUILT_IN_PARSERS, $this->parsers);
         $status = explode(' ', $status);
-        if(count($status) > 2){
+        if (count($status) > 2) {
             $this->_httpVersion = array_shift($status);
-            $this->_statusCode = (int) array_shift($status);
+            $this->_statusCode = (int)array_shift($status);
             $this->_statusMessage = implode(' ', $status);
         }
         $this->_rawHeaders = $headers;
@@ -121,15 +125,16 @@ class Response
      * @return ResponseParserInterface|bool
      * @author clearswitch。
      */
-    protected function getParser($name, $charset = null){
+    protected function getParser($name, $charset = null)
+    {
         $parser = strtolower($name);
         $parser = isset($this->parsers[$parser]) ? $this->parsers[$parser] : null;
-        if($parser){
+        if ($parser) {
             $parser = ObjectHelper::create($parser);
-            if(!$parser instanceof ResponseParserInterface){
+            if (!$parser instanceof ResponseParserInterface) {
                 throw new \Exception('parser must implements ' . ResponseParserInterface::class);
             }
-            if(!empty($charset)){
+            if (!empty($charset)) {
                 $parser->charset = $charset;
             }
             return $parser;
@@ -142,7 +147,8 @@ class Response
      * @return string
      * @author clearswitch。
      */
-    public function getRawResponse(){
+    public function getRawResponse()
+    {
         return $this->_rawReponse;
     }
 
@@ -152,15 +158,18 @@ class Response
      * @return string
      * @author daikai
      */
-    public function getRequestData(){
+    public function getRequestData()
+    {
         return (new request())->getRequestData();
     }
+
     /**
      * 获取消息体
      * @return string
      * @author clearswitch。
      */
-    public function getRawContent(){
+    public function getRawContent()
+    {
         return $this->_rawContent;
     }
 
@@ -169,44 +178,48 @@ class Response
      * @return string
      * @author clearswitch。
      */
-    public function getRawHeaders(){
+    public function getRawHeaders()
+    {
         return $this->_rawHeaders;
     }
-    
+
     /**
      * 获取消息体
      * @return array|string|null
      * @author clearswitch。
      */
-    public function getBody(){
-        if($this->_body === false){
+    public function getBody()
+    {
+        if ($this->_body === false) {
             $this->_body = null;
-            if($this->_rawContent){
+            if ($this->_rawContent) {
                 $this->_body = $this->_rawContent;
                 $content = $this->_rawContent;
-                if(ord(substr($content, 0, 1)) === 239 && ord(substr($content, 1, 1)) === 187 && ord(substr($content, 2, 1)) === 191){
+                if (ord(substr($content, 0, 1)) === 239 && ord(substr($content, 1, 1)) === 187 && ord(substr($content, 2, 1)) === 191) {
                     $content = substr($content, 3);
                 }
                 $parsed = false;
                 $parser = $this->getParser($this->getContentType(), $this->getCharset());
-                if($parser){
+                if ($parser) {
                     $body = $parser->parse($content);
-                    if($body){
+                    if ($body) {
                         $parsed = true;
                         $this->_body = $parser->parse($content);
                     }
                 }
-                if(!$parsed && $this->tryParse === true){
-                    foreach(array_keys($this->parsers) as $name){
+                if (!$parsed && $this->tryParse === true) {
+                    foreach (array_keys($this->parsers) as $name) {
                         $parser = $this->getParser($name);
-                        if($parser->can($content)){
-                            try{
+                        if ($parser->can($content)) {
+                            try {
                                 $body = $parser->parse($content);
-                                if($body){
+                                if ($body) {
                                     $this->_body = $parser->parse($content);
                                     break;
                                 }
-                            }catch(\Exception $e){}catch(\Error $e){}
+                            } catch (\Exception $e) {
+                            } catch (\Error $e) {
+                            }
                         }
                     }
                 }
@@ -220,22 +233,23 @@ class Response
      * @return array|null
      * @author clearswitch。
      */
-    public function getHeaders(){
-        if($this->_headers === false){
+    public function getHeaders()
+    {
+        if ($this->_headers === false) {
             $this->_headers = null;
-            if($this->_rawHeaders){
+            if ($this->_rawHeaders) {
                 $this->_headers = [];
                 $headers = explode("\r\n", $this->_rawHeaders);
-                foreach($headers as $header){
-                    if($header){
+                foreach ($headers as $header) {
+                    if ($header) {
                         $header = explode(': ', $header);
-                        if(isset($header[1])){
-                            if(isset($this->_headers[$header[0]])){
-                                if(!is_array($this->_headers[$header[0]])){
+                        if (isset($header[1])) {
+                            if (isset($this->_headers[$header[0]])) {
+                                if (!is_array($this->_headers[$header[0]])) {
                                     $this->_headers[$header[0]] = [$this->_headers[$header[0]]];
                                 }
                                 $this->_headers[$header[0]][] = $header[1];
-                            }else{
+                            } else {
                                 $this->_headers[$header[0]] = $header[1];
                             }
                         }
@@ -251,15 +265,16 @@ class Response
      * @return array
      * @author clearswitch。
      */
-    public function getCookies(){
+    public function getCookies()
+    {
         $result = [];
         $headers = $this->getHeaders();
-        if(isset($headers['Set-Cookie'])){
-            if($cookies = $headers['Set-Cookie']){
-                if(!is_array($cookies)){
+        if (isset($headers['Set-Cookie'])) {
+            if ($cookies = $headers['Set-Cookie']) {
+                if (!is_array($cookies)) {
                     $cookies = [$cookies];
                 }
-                foreach($cookies as $cookie){
+                foreach ($cookies as $cookie) {
                     $cookie = $this->parseCookie($cookie);
                     $result[$cookie['key']] = $cookie;
                 }
@@ -274,18 +289,19 @@ class Response
      * @return array
      * @author clearswitch。
      */
-    public function parseCookie($cookie){
+    public function parseCookie($cookie)
+    {
         $cookie = explode('; ', $cookie);
         $keyValue = explode('=', $cookie[0]);
         unset($cookie[0]);
         $result['key'] = $keyValue[0];
         $result['value'] = urldecode($keyValue[1]);
-        foreach($cookie as $element){
+        foreach ($cookie as $element) {
             $elements = explode('=', $element);
             $name = strtolower($elements[0]);
-            if(count($elements) === 2){
+            if (count($elements) === 2) {
                 $result[$name] = $elements[1];
-            }else{
+            } else {
                 $result[$name] = true;
             }
         }
@@ -297,11 +313,12 @@ class Response
      * @return string
      * @author clearswitch。
      */
-    public function getContentType(){
-        if($this->_contentType === false){
+    public function getContentType()
+    {
+        if ($this->_contentType === false) {
             $this->_contentType = null;
             $header = $this->getHeaders();
-            if(isset($header['Content-Type'])){
+            if (isset($header['Content-Type'])) {
                 $this->_contentType = explode(';', $header['Content-Type'])[0];
             }
         }
@@ -313,12 +330,13 @@ class Response
      * @return string
      * @author clearswitch。
      */
-    public function getCharset(){
-        if($this->_charset === false){
+    public function getCharset()
+    {
+        if ($this->_charset === false) {
             $this->_charset = null;
             $header = $this->getHeaders();
-            if(isset($header['Content-Type'])){
-                if(preg_match('/charset=(.*)/i', $header['Content-Type'], $matches)){
+            if (isset($header['Content-Type'])) {
+                if (preg_match('/charset=(.*)/i', $header['Content-Type'], $matches)) {
                     $this->_charset = $matches[1];
                 }
             }
@@ -331,7 +349,8 @@ class Response
      * @return int
      * @author clearswitch。
      */
-    public function getStatusCode(){
+    public function getStatusCode()
+    {
         return $this->_statusCode;
     }
 
@@ -340,7 +359,8 @@ class Response
      * @return int
      * @author clearswitch。
      */
-    public function getStatusMessage(){
+    public function getStatusMessage()
+    {
         return $this->_statusMessage;
     }
 
@@ -349,7 +369,8 @@ class Response
      * @return int
      * @author clearswitch。
      */
-    public function getHttpVersion(){
+    public function getHttpVersion()
+    {
         return $this->_httpVersion;
     }
 }

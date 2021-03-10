@@ -31,7 +31,7 @@ class Request
 
     /**
      * 用那种请求方式
-     * @var string[] 
+     * @var string[]
      */
     public $transports=[
         'cUrl' => 'clearswitch\http\transport\CUrlTransport',
@@ -200,7 +200,7 @@ class Request
     }
     /**
      * @return mixed 发送请求
-     * @return TransportInterface
+     * @return Response
      * @author clearSwitch
      */
     public function send(){
@@ -214,7 +214,7 @@ class Request
         ], $statusCode, $headers, $content, $response);
         return $result;
     }
-    
+
     /**
      * 实例化响应类
      * @author clearSwitch。

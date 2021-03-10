@@ -7,7 +7,7 @@
 namespace clearswitch\http\builder;
 
 
-class FormDataBuilder
+class FormDataBuilder extends Builder
 {
     /**
      * @var string
