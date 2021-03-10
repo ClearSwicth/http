@@ -122,6 +122,26 @@ class Request
     }
 
     /**
+     * 获取消息体参数
+     * @return array
+     * @author clearSwitch。
+     */
+    public function getBody(){
+        return $this->_body;
+    }
+
+    /**
+     * 设置消息体参数
+     * @param array $body 消息体
+     * @return Request
+     * @author clearSwitch。
+     */
+    public function setBody(array $body){
+        $this->_body = $body;
+        return $this;
+    }
+
+    /**
      * 获得头部信息
      * @return array
      * @author daikai
@@ -130,6 +150,25 @@ class Request
         return $this->_headers;
     }
 
+    /**
+     * 获取查询参数
+     * @return array
+     * @author clearSwitch。
+     */
+    public function getQuery(){
+        return $this->_query;
+    }
+
+    /**
+     * 设置查询信息
+     * @param array $query 查询信息
+     * @return Request
+     * @author clearSwitch。
+     */
+    public function setQuery(array $query){
+        $this->_query = $query;
+        return $this;
+    }
     /**
      * @param array $headers 设置请求头
      * @return $this
